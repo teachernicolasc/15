@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>El Detective de las Palabras - Segundo Básico</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4F46E5; 
+            --secondary: #F59E0B; 
+            --background: #1e1b4b; /* Fondo misterioso oscuro */
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(-45deg, #1e1b4b, #312e81, #4c1d95, #1e3a8a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            overflow-x: hidden;
+            touch-action: manipulation; 
+            user-select: none; 
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        /* Animación de fondo misterioso */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h1, h2, h3, .font-title {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Animaciones UI */
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        @keyframes scale-up {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 20px 8px rgba(245, 158, 11, 0.7); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .animate-bounce-short { animation: bounce-short 0.5s ease-in-out; }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        .animate-scale-up { animation: scale-up 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .animate-pulse-glow { animation: pulse-glow 2s infinite; }
+        .floating-element { animation: float 6s ease-in-out infinite; }
+
+        .btn-detective {
+            background: linear-gradient(to bottom, #FCD34D, #F59E0B);
+            border-bottom: 6px solid #D97706;
+            transition: all 0.1s;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            color: #78350f;
+        }
+        .btn-detective:active {
+            transform: translateY(6px);
+            border-bottom: 0px solid #D97706;
+            margin-bottom: 6px;
+        }
+
+        .btn-option {
+            background: white;
+            border: 4px solid #E5E7EB;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .btn-option:hover {
+            border-color: #6366F1;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(99, 102, 241, 0.2);
+        }
+        .btn-option:active {
+            transform: translateY(2px);
+            background-color: #EEF2FF;
+        }
+
+        .word-slot {
+            min-height: 60px;
+            min-width: 80px;
+            border: 3px dashed #94A3B8;
+            border-radius: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255,255,255,0.7);
+            transition: all 0.2s;
+            margin: 0.25rem;
+        }
+        .word-slot.filled {
+            border: 3px solid #6366F1;
+            background-color: #EEF2FF;
+            color: #4338CA;
+            font-weight: bold;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        
+        .word-draggable {
+            cursor: pointer;
+            background: white;
+            border: 3px solid #818CF8;
+            color: #3730A3;
+            font-weight: bold;
+            font-size: 1.25rem;
+            border-radius: 1rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 0 #6366F1;
+            transition: all 0.1s;
+            margin: 0.25rem;
+            display: inline-block;
+        }
+        .word-draggable:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #6366F1;
+        }
+        .word-draggable.used {
+            opacity: 0.3;
+            pointer-events: none;
+            box-shadow: none;
+            transform: translateY(4px);
+        }
+
+        .btn-audio {
+            background: linear-gradient(to bottom, #A78BFA, #8B5CF6);
+            border-bottom: 6px solid #6D28D9;
+            color: white;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.1s;
+            margin: 0 auto;
+        }
+        .btn-audio:active, .btn-audio.playing {
+            transform: translateY(6px);
+            border-bottom: 0px solid #6D28D9;
+            margin-bottom: 6px;
+            background: #7C3AED;
+        }
+
+        /* Partículas de fondo para el misterio */
+        .bg-particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-particles i {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.05);
+            font-size: 3rem;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .suspect-card {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .suspect-card.selected {
+            border-color: #F59E0B;
+            background-color: #FEF3C7;
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #818CF8; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex flex-col relative">
+
+    <div class="bg-particles" id="particles-container">
+        <!-- Generadas por JS -->
+    </div>
+
+    <div id="app" class="flex-grow flex items-center justify-center p-4 relative z-10">
+        
+        <!-- Pantalla 1: Inicio -->
+        <div id="screen-intro" class="max-w-md w-full bg-white rounded-3xl shadow-2xl border-4 border-indigo-300 p-8 text-center animate-scale-up">
+            <div class="text-7xl mb-4 text-indigo-600 animate-bounce-short">
+                <i class="fa-solid fa-user-secret"></i>
+            </div>
+            <h1 class="text-4xl font-title text-indigo-900 mb-2">Misterio de las Palabras</h1>
+            <p class="text-lg text-slate-600 mb-2 font-semibold">¡Alguien se ha robado el Gran Libro de las Letras!</p>
+            <p class="text-sm text-amber-600 mb-6 font-bold bg-amber-50 p-2 rounded-lg">Completa los 4 niveles para obtener pistas y descubrir al Ladrón.</p>
+            
+            <div class="mb-6">
+                <label for="playerName" class="block text-left text-sm font-bold text-slate-700 mb-2">Nombre del Detective:</label>
+                <input type="text" id="playerName" placeholder="Escribe tu nombre..." class="w-full px-4 py-3 rounded-xl border-4 border-slate-200 focus:border-indigo-500 focus:ring-0 outline-none transition-all text-xl font-title text-center text-indigo-900" autocomplete="off">
+            </div>
+            
+            <button onclick="startGame()" class="btn-detective w-full py-4 rounded-2xl text-2xl font-title flex items-center justify-center gap-2">
+                <i class="fa-solid fa-magnifying-glass"></i> ¡Iniciar Investigación!
+            </button>
+        </div>
+
+        <!-- Pantalla 2: Mapa de Niveles -->
+        <div id="screen-map" class="max-w-4xl w-full hidden">
+            <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border-4 border-indigo-300 p-6 md:p-8 animate-scale-up">
+                
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b-4 border-indigo-100 pb-4 gap-4">
+                    <h2 class="text-3xl md:text-4xl font-title text-indigo-900">
+                        <i class="fa-solid fa-map-location-dot text-indigo-500 mr-2"></i> Mapa de Misiones
+                    </h2>
+                    
+                    <div class="flex gap-4">
+                        <button onclick="showCluesBag()" class="bg-amber-100 text-amber-800 px-4 py-2 rounded-2xl font-bold flex items-center gap-2 text-xl border-2 border-amber-300 hover:bg-amber-200 transition-colors shadow-sm relative">
+                            <i class="fa-solid fa-briefcase"></i> Pistas
+                            <span id="clue-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center hidden">!</span>
+                        </button>
+                        <div class="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-2xl font-bold flex items-center gap-2 text-xl border-2 border-indigo-300">
+                            <i class="fa-solid fa-star text-amber-500"></i>
+                            <span id="total-stars">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6" id="level-container">
+                    <!-- Los botones de nivel se generarán con JS -->
+                </div>
+
+                <div id="final-mystery-btn-container" class="hidden mt-8 text-center animate-scale-up">
+                    <button onclick="startFinalMystery()" class="bg-gradient-to-r from-red-500 to-rose-600 text-white font-title text-3xl py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all border-4 border-rose-300 animate-pulse-glow">
+                        <i class="fa-solid fa-handcuffs"></i> ¡Resolver el Misterio Final!
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla 3: Sala de Juego -->
+        <div id="screen-game" class="max-w-3xl w-full hidden">
+            <div class="bg-white rounded-t-3xl shadow-md border-b-4 border-slate-200 p-4 flex justify-between items-center">
+                <button onclick="confirmExitGame()" class="text-slate-500 hover:text-red-500 font-bold flex items-center gap-2 transition-colors bg-slate-100 px-4 py-2 rounded-xl">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al Mapa
+                </button>
+                <div class="font-title text-2xl text-indigo-800" id="game-title">Nivel</div>
+                <div class="text-amber-500 font-bold text-xl bg-amber-50 px-3 py-1 rounded-lg border border-amber-200">
+                    <i class="fa-solid fa-star"></i> <span id="game-score">0</span>
+                </div>
+            </div>
+
+            <div class="bg-slate-200 h-6 w-full relative overflow-hidden">
+                <div id="progress-bar" class="bg-green-500 h-full transition-all duration-500 ease-out relative" style="width: 0%">
+                    <div class="absolute top-0 left-0 w-full h-1/2 bg-white opacity-30"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-slate-600" id="progress-text">0/0</div>
+            </div>
+
+            <div class="bg-white rounded-b-3xl shadow-2xl border-x-4 border-b-4 border-slate-200 p-6 md:p-10 min-h-[450px] flex flex-col justify-center relative overflow-hidden" id="game-content-area">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+
+        <!-- Pantalla 4: Identificar al Culpable -->
+        <div id="screen-final" class="max-w-4xl w-full hidden">
+            <div class="bg-white rounded-3xl shadow-2xl border-4 border-amber-300 p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl font-title text-indigo-900 mb-2"><i class="fa-solid fa-scale-balanced"></i> El Gran Juicio</h2>
+                    <p class="text-xl text-slate-600">Revisa tus pistas y selecciona al culpable de robar el Gran Libro.</p>
+                </div>
+
+                <!-- Resumen de Pistas -->
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 mb-8 flex flex-wrap gap-2 justify-center" id="final-clues-list">
+                    <!-- Se inyectan las pistas -->
+                </div>
+
+                <!-- Sospechosos -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="suspects-container">
+                    <!-- Generados por JS -->
+                </div>
+
+                <div class="text-center">
+                    <button id="btn-accuse" onclick="accuseSuspect()" class="btn-detective py-4 px-10 rounded-2xl text-2xl font-title opacity-50 cursor-not-allowed" disabled>
+                        ¡Acusar al Sospechoso!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Feedback -->
+    <div id="feedback-modal" class="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div id="feedback-card" class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center transform scale-75 transition-transform duration-300 border-8">
+            <div id="feedback-icon" class="text-7xl mb-4"></div>
+            <h3 id="feedback-title" class="text-3xl font-title mb-2"></h3>
+            <p id="feedback-message" class="text-xl text-slate-700 mb-6 font-bold"></p>
+            <button onclick="closeFeedbackAndNext()" class="btn-detective w-full py-4 rounded-xl text-2xl font-title">Continuar <i class="fa-solid fa-arrow-right ml-2"></i></button>
+        </div>
+    </div>
+
+    <!-- Modal de Nivel Completado / Nueva Pista -->
+    <div id="complete-modal" class="fixed inset-0 bg-slate-900/80 flex items-center justify-center z-50 hidden backdrop-blur-md">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 text-center border-8 border-yellow-400 relative overflow-hidden transform transition-transform duration-500 scale-0" id="complete-card">
+            
+            <div id="complete-stars-view">
+                <div class="text-yellow-400 text-7xl mb-4 animate-bounce-short">
+                    <i class="fa-solid fa-medal"></i>
+                </div>
+                <h2 class="text-4xl font-title text-indigo-900 mb-2">¡Nivel Completado!</h2>
+                <div class="flex justify-center gap-2 mb-6 mt-4" id="stars-awarded"></div>
+                
+                <div class="bg-slate-100 p-4 rounded-xl mb-6">
+                    <p class="text-lg text-slate-700 font-bold mb-2">¡Has encontrado una pista!</p>
+                    <div class="text-5xl text-amber-600 animate-pulse-glow w-24 h-24 mx-auto bg-white rounded-full flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                </div>
+
+                <button onclick="showNewlyFoundClue()" class="btn-detective w-full py-4 rounded-xl text-2xl font-title">
+                    Revelar Pista <i class="fa-solid fa-eye ml-2"></i>
+                </button>
+            </div>
+
+            <!-- Vista de la pista -->
+            <div id="complete-clue-view" class="hidden">
+                <h2 class="text-3xl font-title text-indigo-900 mb-4">Pista #<span id="clue-number-display"></span></h2>
+                <div class="bg-amber-100 border-4 border-amber-300 p-6 rounded-2xl mb-6 transform rotate-1">
+                    <p class="text-xl text-amber-900 font-bold font-title italic" id="new-clue-text"></p>
+                </div>
+                <button onclick="returnToMap()" class="btn-detective w-full py-4 rounded-xl text-2xl font-title">
+                    Guardar y Volver <i class="fa-solid fa-briefcase ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de la Mochila de Pistas -->
+    <div id="clues-modal" class="fixed inset-0 bg-slate-900/80 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 border-8 border-amber-500">
+            <div class="flex justify-between items-center mb-6 border-b-4 border-amber-100 pb-4">
+                <h2 class="text-3xl font-title text-amber-700"><i class="fa-solid fa-briefcase"></i> Mochila de Pistas</h2>
+                <button onclick="closeCluesBag()" class="text-slate-400 hover:text-red-500 text-3xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="space-y-4 max-h-[60vh] overflow-y-auto" id="clues-list-container">
+                <!-- Se inyectan pistas o mensaje de vacío -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Metajuego: Misterio
+        const suspects = [
+            { id: 'gato', name: 'Don Gato', desc: 'Silencioso y peludo.', img: '🐱' },
+            { id: 'mono', name: 'Mono Tito', desc: 'Travieso y sin plumas.', img: '🐵' },
+            { id: 'loro', name: 'Loro Paco', desc: 'Hablador y plumífero.', img: '🦜' },
+            { id: 'pato', name: 'Pato Renato', desc: 'Ama el agua.', img: '🦆' }
+        ];
+
+        // El Loro es el culpable.
+        const mysteryClues = [
+            "El ladrón tiene plumas de colores.",
+            "Al culpable le encanta hablar y repetir palabras.",
+            "En la escena encontramos restos de semillas.",
+            "El culpable salió volando por la ventana."
+        ];
+
+        let state = {
+            playerName: '',
+            totalStars: 0,
+            currentLevelIndex: -1,
+            currentQuestionIndex: 0,
+            levelScore: 0,
+            levelsCompleted: [],
+            cluesCollected: [], // Índices de pistas recolectadas
+            selectedSuspect: null,
+            sentenceBuilder: { selectedWords: [], availableWords: [] }
+        };
+
+        // Base de datos de niveles (10 preguntas por nivel)
+        const levels = [
+            {
+                id: 'level-1',
+                title: 'Lupa de Letras',
+                description: 'Completa las palabras con la ortografía correcta.',
+                icon: 'fa-magnifying-glass',
+                color: 'blue',
+                type: 'multiple-choice',
+                questions: [
+                    { q: '¿Qué vocal falta? C _ S A (donde vives)', options: ['A', 'E', 'I', 'O'], correct: 0, image: '🏠' },
+                    { q: '¿Con qué sílaba empieza? __ P A T O S', options: ['SA', 'ZA', 'CE', 'CA'], correct: 1, image: '👞' },
+                    { q: '¿Qué palabra está bien escrita?', options: ['Bicicleta', 'Visicleta', 'Biciclet', 'Vicicleta'], correct: 0, image: '🚲' },
+                    { q: '¿Cuál suena FUERTE?', options: ['Pera', 'Loro', 'Caracol', 'Perro'], correct: 3, image: '🐶' },
+                    { q: 'Completa: El ratón come __ E S O', options: ['C', 'Q', 'QU', 'K'], correct: 2, image: '🧀' },
+                    { q: 'Completa: La __ A C A da leche.', options: ['B', 'V', 'C', 'P'], correct: 1, image: '🐄' },
+                    { q: '¿Qué palabra es un plural (son muchos)?', options: ['Árbol', 'Lápiz', 'Flores', 'Gato'], correct: 2, image: '💐' },
+                    { q: 'Completa con C, S o Z: __ I E L O', options: ['S', 'C', 'Z', 'X'], correct: 1, image: '☁️' },
+                    { q: '¿Qué palabra falta? "Me lavo las ___"', options: ['Manos', 'Zapatos', 'Pelo', 'Ojos'], correct: 0, image: '👐' },
+                    { q: '¿Cuál de estas palabras es un animal?', options: ['Mesa', 'Caballo', 'Pelota', 'Silla'], correct: 1, image: '🐎' }
+                ]
+            },
+            {
+                id: 'level-2',
+                title: 'Casa de Oraciones',
+                description: 'Toca las palabras en orden para que la oración tenga sentido.',
+                icon: 'fa-house-chimney',
+                color: 'green',
+                type: 'sentence-builder',
+                questions: [
+                    { words: ['El', 'gato', 'toma', 'leche.'], jumbled: ['toma', 'gato', 'leche.', 'El'] },
+                    { words: ['Los', 'niños', 'juegan', 'en', 'el', 'parque.'], jumbled: ['en', 'juegan', 'parque.', 'Los', 'el', 'niños'] },
+                    { words: ['Ayer', 'llovió', 'toda', 'la', 'mañana.'], jumbled: ['la', 'Ayer', 'mañana.', 'llovió', 'toda'] },
+                    { words: ['Mi', 'perro', 'corre', 'muy', 'rápido.'], jumbled: ['muy', 'perro', 'Mi', 'rápido.', 'corre'] },
+                    { words: ['Me', 'gusta', 'leer', 'cuentos', 'divertidos.'], jumbled: ['leer', 'divertidos.', 'gusta', 'cuentos', 'Me'] },
+                    { words: ['Mañana', 'iremos', 'al', 'cine', 'juntos.'], jumbled: ['al', 'juntos.', 'Mañana', 'iremos', 'cine'] },
+                    { words: ['La', 'manzana', 'es', 'roja', 'y', 'dulce.'], jumbled: ['y', 'es', 'dulce.', 'manzana', 'La', 'roja'] },
+                    { words: ['Juan', 'pinta', 'un', 'dibujo', 'hermoso.'], jumbled: ['hermoso.', 'pinta', 'Juan', 'un', 'dibujo'] },
+                    { words: ['El', 'pájaro', 'canta', 'en', 'el', 'árbol.'], jumbled: ['el', 'pájaro', 'árbol.', 'canta', 'en', 'El'] },
+                    { words: ['Nosotros', 'somos', 'buenos', 'amigos', 'siempre.'], jumbled: ['buenos', 'siempre.', 'Nosotros', 'amigos', 'somos'] }
+                ]
+            },
+            {
+                id: 'level-3',
+                title: 'Misterio del Sonido',
+                description: 'Escucha atentamente el audio y responde.',
+                icon: 'fa-headphones',
+                color: 'purple',
+                type: 'audio-comprehension',
+                questions: [
+                    { audioText: 'Murciélago', q: '¿Cuántas sílabas (golpes de voz) tiene?', options: ['Tres', 'Cuatro', 'Cinco'], correct: 1 },
+                    { audioText: 'Había una vez un elefante que soñaba con volar.', q: '¿Qué animal se menciona?', options: ['Un perro', 'Un elefante', 'Un pájaro'], correct: 1 },
+                    { audioText: 'Estrella', q: '¿Con qué vocal empieza?', options: ['A', 'E', 'I'], correct: 1 },
+                    { audioText: 'El sol brilla en el cielo azul.', q: '¿De qué color es el cielo?', options: ['Rojo', 'Gris', 'Azul'], correct: 2 },
+                    { audioText: 'Chocolate', q: '¿Qué palabra escuchaste?', options: ['Choclo', 'Chocolate', 'Chupete'], correct: 1 },
+                    { audioText: 'Ayer comí pizza con mi familia.', q: '¿Cuándo comió pizza?', options: ['Hoy', 'Mañana', 'Ayer'], correct: 2 },
+                    { audioText: 'Guitarra', q: '¿Tiene sonido fuerte o suave de la R?', options: ['Fuerte (rr)', 'Suave (r)', 'No tiene R'], correct: 0 },
+                    { audioText: 'El niño dibuja un barco grande.', q: '¿Qué tamaño tiene el barco?', options: ['Pequeño', 'Grande', 'Mediano'], correct: 1 },
+                    { audioText: 'Mariposa', q: '¿Cuántas sílabas tiene?', options: ['Dos', 'Tres', 'Cuatro'], correct: 2 }, // ma-ri-po-sa
+                    { audioText: 'Zapatos', q: '¿Con qué sílaba empieza?', options: ['Sa', 'Za', 'Ce'], correct: 1 }
+                ]
+            },
+            {
+                id: 'level-4',
+                title: 'El Texto Perdido',
+                description: 'Lee el texto con atención y demuestra lo que entendiste.',
+                icon: 'fa-book-open-reader',
+                color: 'amber',
+                type: 'reading',
+                questions: [
+                    // Texto 1 (Oso Goloso - 3 qs)
+                    { text: 'El oso Goloso vive en un bosque muy grande. Le encanta comer miel dulce y dormir largas siestas bajo los árboles.', q: '¿Quién es Goloso?', options: ['Un árbol', 'Un oso', 'Un bosque'], correct: 1 },
+                    { text: 'El oso Goloso vive en un bosque muy grande. Le encanta comer miel dulce y dormir largas siestas bajo los árboles.', q: '¿Qué le gusta comer?', options: ['Hojas verdes', 'Frutas', 'Miel dulce'], correct: 2 },
+                    { text: 'El oso Goloso vive en un bosque muy grande. Le encanta comer miel dulce y dormir largas siestas bajo los árboles.', q: '¿Dónde duerme la siesta?', options: ['Bajo los árboles', 'En una cueva', 'En una cama'], correct: 0 },
+                    // Texto 2 (Marta y bicicleta - 3 qs)
+                    { text: 'Marta tiene una bicicleta roja nueva. Todos los domingos va al parque a pasear con su papá.', q: '¿De qué color es la bicicleta?', options: ['Roja', 'Azul', 'Verde'], correct: 0 },
+                    { text: 'Marta tiene una bicicleta roja nueva. Todos los domingos va al parque a pasear con su papá.', q: '¿Qué día va al parque?', options: ['Lunes', 'Sábado', 'Domingo'], correct: 2 },
+                    { text: 'Marta tiene una bicicleta roja nueva. Todos los domingos va al parque a pasear con su papá.', q: '¿Con quién va a pasear?', options: ['Con su mamá', 'Con su papá', 'Sola'], correct: 1 },
+                    // Texto 3 (Viaje espacial - 4 qs)
+                    { text: 'Lucas construyó un cohete de cartón. Él imaginó que viajaba hasta la Luna para buscar rocas espaciales.', q: '¿De qué material es el cohete?', options: ['Metal', 'Plástico', 'Cartón'], correct: 2 },
+                    { text: 'Lucas construyó un cohete de cartón. Él imaginó que viajaba hasta la Luna para buscar rocas espaciales.', q: '¿A dónde imaginó que viajaba?', options: ['Al Sol', 'A la Luna', 'A Marte'], correct: 1 },
+                    { text: 'Lucas construyó un cohete de cartón. Él imaginó que viajaba hasta la Luna para buscar rocas espaciales.', q: '¿Qué quería buscar?', options: ['Aliens', 'Estrellas', 'Rocas espaciales'], correct: 2 },
+                    { text: 'Lucas construyó un cohete de cartón. Él imaginó que viajaba hasta la Luna para buscar rocas espaciales.', q: '¿El viaje de Lucas fue real o imaginario?', options: ['Real', 'Imaginario', 'En un sueño'], correct: 1 }
+                ]
+            }
+        ];
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSoundEffect(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'incorrect') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'win') {
+                [400, 523.25, 659.25, 880].forEach((freq, i) => { // Acorde alegre
+                    setTimeout(() => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'square';
+                        o.frequency.value = freq;
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                        o.start(); o.stop(audioCtx.currentTime + 0.3);
+                    }, i * 150);
+                });
+            }
+        }
+
+        // Generar partículas decorativas al azar
+        function initParticles() {
+            const container = document.getElementById('particles-container');
+            const icons = ['fa-magnifying-glass', 'fa-shoe-prints', 'fa-question', 'fa-star'];
+            for(let i = 0; i < 15; i++) {
+                const el = document.createElement('i');
+                el.className = `fa-solid ${icons[Math.floor(Math.random() * icons.length)]}`;
+                el.style.left = `${Math.random() * 100}vw`;
+                el.style.top = `${Math.random() * 100}vh`;
+                el.style.animationDelay = `${Math.random() * 5}s`;
+                el.style.transform = `scale(${Math.random() * 0.5 + 0.5}) rotate(${Math.random() * 360}deg)`;
+                container.appendChild(el);
+            }
+        }
+
+        function showScreen(screenId) {
+            document.getElementById('screen-intro').classList.add('hidden');
+            document.getElementById('screen-map').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-final').classList.add('hidden');
+            
+            const screen = document.getElementById(screenId);
+            screen.classList.remove('hidden');
+            screen.classList.remove('animate-scale-up');
+            void screen.offsetWidth;
+            screen.classList.add('animate-scale-up');
+        }
+
+        function startGame() {
+            const nameInput = document.getElementById('playerName').value.trim();
+            if (nameInput === '') {
+                const inputEl = document.getElementById('playerName');
+                inputEl.classList.add('animate-shake', 'border-red-500');
+                setTimeout(() => inputEl.classList.remove('animate-shake', 'border-red-500'), 500);
+                return;
+            }
+            state.playerName = nameInput;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            renderMap();
+            showScreen('screen-map');
+        }
+
+        function renderMap() {
+            const container = document.getElementById('level-container');
+            container.innerHTML = '';
+            document.getElementById('total-stars').textContent = state.totalStars;
+
+            // Actualizar notificación de pistas
+            const badge = document.getElementById('clue-badge');
+            if (state.cluesCollected.length > 0 && state.cluesCollected.length < 4) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            levels.forEach((level, index) => {
+                const isCompleted = state.levelsCompleted.includes(index);
+                const colorMap = {
+                    'blue': { bg: 'bg-blue-50', border: 'border-blue-300', text: 'text-blue-900', icon: 'text-blue-500', tag: 'bg-blue-600', hover: 'hover:border-blue-400 hover:bg-blue-100' },
+                    'green': { bg: 'bg-green-50', border: 'border-green-300', text: 'text-green-900', icon: 'text-green-500', tag: 'bg-green-600', hover: 'hover:border-green-400 hover:bg-green-100' },
+                    'purple': { bg: 'bg-purple-50', border: 'border-purple-300', text: 'text-purple-900', icon: 'text-purple-500', tag: 'bg-purple-600', hover: 'hover:border-purple-400 hover:bg-purple-100' },
+                    'amber': { bg: 'bg-amber-50', border: 'border-amber-300', text: 'text-amber-900', icon: 'text-amber-500', tag: 'bg-amber-600', hover: 'hover:border-amber-400 hover:bg-amber-100' }
+                };
+                const c = colorMap[level.color];
+                
+                const btn = document.createElement('button');
+                btn.className = `${c.bg} border-4 ${c.border} rounded-3xl p-6 text-left ${c.hover} transition-all group relative overflow-hidden flex flex-col justify-between min-h-[200px] w-full shadow-md`;
+                btn.onclick = () => loadLevel(index);
+                
+                let checkMark = isCompleted ? `<div class="absolute top-4 right-4 bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-md border-2 border-white z-20"><i class="fa-solid fa-check"></i></div>` : '';
+
+                btn.innerHTML = `
+                    ${checkMark}
+                    <div class="absolute top-0 right-0 ${c.tag} text-white font-bold py-1 px-4 rounded-bl-2xl z-10 shadow-sm">Misión ${index + 1}</div>
+                    <div class="relative z-10">
+                        <i class="fa-solid ${level.icon} text-5xl ${c.icon} mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-sm"></i>
+                        <h3 class="text-2xl font-title ${c.text} mb-2 leading-tight">${level.title}</h3>
+                        <p class="text-slate-700 font-semibold text-sm leading-snug">${level.description}</p>
+                    </div>
+                    <div class="mt-4 text-right text-${level.color}-700 font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                        Jugar <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+
+            // Mostrar botón del misterio final si completó los 4
+            if (state.levelsCompleted.length === 4) {
+                document.getElementById('final-mystery-btn-container').classList.remove('hidden');
+            }
+        }
+
+        function loadLevel(index) {
+            state.currentLevelIndex = index;
+            state.currentQuestionIndex = 0;
+            state.levelScore = 0;
+            
+            const level = levels[index];
+            document.getElementById('game-title').innerHTML = `<i class="fa-solid ${level.icon} mr-2"></i> ${level.title}`;
+            updateScoreDisplay();
+            
+            showScreen('screen-game');
+            renderQuestion();
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('game-score').textContent = state.levelScore;
+        }
+
+        function updateProgress() {
+            const level = levels[state.currentLevelIndex];
+            const total = level.questions.length;
+            const current = state.currentQuestionIndex;
+            const percentage = (current / total) * 100;
+            
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-text').textContent = `${current} de ${total}`;
+        }
+
+        function renderQuestion() {
+            updateProgress();
+            
+            const level = levels[state.currentLevelIndex];
+            if (state.currentQuestionIndex >= level.questions.length) {
+                finishLevel();
+                return;
+            }
+
+            const qData = level.questions[state.currentQuestionIndex];
+            const container = document.getElementById('game-content-area');
+            container.innerHTML = ''; 
+
+            container.classList.remove('animate-scale-up');
+            void container.offsetWidth;
+            container.classList.add('animate-scale-up');
+
+            switch(level.type) {
+                case 'multiple-choice': renderMultipleChoice(container, qData); break;
+                case 'sentence-builder': renderSentenceBuilder(container, qData); break;
+                case 'audio-comprehension': renderAudioComprehension(container, qData); break;
+                case 'reading': renderReading(container, qData); break;
+            }
+        }
+
+        function renderMultipleChoice(container, qData) {
+            let html = `
+                <div class="text-center mb-8 flex-grow flex flex-col justify-center">
+                    ${qData.image ? `<div class="text-8xl mb-6 animate-bounce-short drop-shadow-md">${qData.image}</div>` : ''}
+                    <h3 class="text-3xl md:text-4xl font-title text-indigo-900">${qData.q}</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-auto">
+            `;
+            qData.options.forEach((opt, idx) => {
+                html += `<button onclick="handleAnswer(${idx === qData.correct})" class="btn-option rounded-2xl py-6 text-2xl font-bold text-slate-700">${opt}</button>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function renderSentenceBuilder(container, qData) {
+            state.sentenceBuilder.availableWords = [...qData.jumbled];
+            state.sentenceBuilder.selectedWords = new Array(qData.words.length).fill(null);
+
+            const buildUI = () => {
+                let html = `
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-title text-indigo-900 mb-2"><i class="fa-solid fa-hand-pointer text-amber-500 mr-2"></i> Toca las palabras en orden para formar la oración</h3>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2 mb-10 min-h-[80px] bg-indigo-50 p-6 rounded-2xl border-2 border-indigo-200 shadow-inner" id="sentence-slots">
+                `;
+                
+                state.sentenceBuilder.selectedWords.forEach((word, idx) => {
+                    if (word) {
+                        html += `<div class="word-slot filled animate-scale-up shadow-sm" onclick="removeWord(${idx})">${word}</div>`;
+                    } else {
+                        html += `<div class="word-slot"></div>`;
+                    }
+                });
+                
+                html += `</div>
+                    <div class="flex flex-wrap justify-center gap-3" id="available-words">
+                `;
+
+                state.sentenceBuilder.availableWords.forEach((word, idx) => {
+                    const isUsed = state.sentenceBuilder.selectedWords.includes(word);
+                    html += `<button class="word-draggable ${isUsed ? 'used' : ''}" onclick="addWord('${word}')">${word}</button>`;
+                });
+
+                html += `</div>`;
+                
+                if (!state.sentenceBuilder.selectedWords.includes(null)) {
+                    html += `
+                        <div class="mt-8 text-center animate-scale-up">
+                            <button onclick="checkSentenceBuilder()" class="btn-detective px-10 py-4 rounded-2xl text-2xl font-title">
+                                <i class="fa-solid fa-check-double mr-2"></i> ¡Comprobar!
+                            </button>
+                        </div>
+                    `;
+                }
+                container.innerHTML = html;
+            };
+
+            window.addWord = (word) => {
+                const emptyIdx = state.sentenceBuilder.selectedWords.indexOf(null);
+                if (emptyIdx !== -1) {
+                    state.sentenceBuilder.selectedWords[emptyIdx] = word;
+                    buildUI();
+                }
+            };
+            window.removeWord = (idx) => {
+                state.sentenceBuilder.selectedWords[idx] = null;
+                buildUI();
+            };
+            window.checkSentenceBuilder = () => {
+                const currentStr = state.sentenceBuilder.selectedWords.join(' ');
+                const correctStr = qData.words.join(' ');
+                handleAnswer(currentStr === correctStr);
+            };
+
+            buildUI();
+        }
+
+        function renderAudioComprehension(container, qData) {
+            let html = `
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-title text-indigo-900 mb-6">Toca el botón para escuchar</h3>
+                    <button id="play-audio-btn" onclick="playQuestionAudio('${qData.audioText}')" class="btn-audio animate-pulse-glow shadow-lg">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                </div>
+                
+                <div class="bg-indigo-50 p-6 rounded-2xl border-2 border-indigo-200 mb-8 mt-auto shadow-inner">
+                    <h4 class="text-2xl font-bold text-slate-800 text-center mb-2">${qData.q}</h4>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            `;
+            qData.options.forEach((opt, idx) => {
+                html += `<button onclick="handleAnswer(${idx === qData.correct})" class="btn-option rounded-xl py-4 text-xl font-bold text-slate-700">${opt}</button>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        window.playQuestionAudio = (text) => {
+            const btn = document.getElementById('play-audio-btn');
+            btn.classList.add('playing');
+            btn.classList.remove('animate-pulse-glow');
+            
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.85; 
+                utterance.pitch = 1.1;
+                
+                utterance.onend = () => {
+                    btn.classList.remove('playing');
+                    btn.classList.add('animate-pulse-glow');
+                };
+                window.speechSynthesis.speak(utterance);
+            } else {
+                btn.classList.remove('playing');
+            }
+        };
+
+        function renderReading(container, qData) {
+            let html = `
+                <div class="bg-amber-50 p-6 md:p-8 rounded-3xl border-4 border-amber-200 mb-8 text-left shadow-inner relative">
+                    <div class="absolute -top-5 -left-5 text-amber-400 text-5xl bg-white rounded-full shadow-sm"><i class="fa-solid fa-quote-left"></i></div>
+                    <p class="text-xl md:text-2xl text-amber-900 font-semibold leading-relaxed relative z-10">${qData.text}</p>
+                </div>
+                
+                <div class="text-center mb-6 mt-auto">
+                    <h3 class="text-2xl md:text-3xl font-title text-indigo-900">${qData.q}</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            `;
+            qData.options.forEach((opt, idx) => {
+                html += `<button onclick="handleAnswer(${idx === qData.correct})" class="btn-option rounded-xl py-4 text-xl font-bold text-slate-700">${opt}</button>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function handleAnswer(isCorrect) {
+            const modal = document.getElementById('feedback-modal');
+            const card = document.getElementById('feedback-card');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const message = document.getElementById('feedback-message');
+            
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-75');
+                card.classList.add('scale-100');
+            }, 10);
+
+            if (isCorrect) {
+                playSoundEffect('correct');
+                state.levelScore += 10;
+                updateScoreDisplay();
+                
+                card.className = "bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center transform transition-transform duration-300 border-8 border-green-400 scale-100 shadow-2xl";
+                icon.innerHTML = '<i class="fa-solid fa-face-smile-beam text-green-500 animate-bounce-short drop-shadow-md"></i>';
+                title.textContent = '¡Correcto!';
+                title.className = "text-4xl font-title mb-2 text-green-600";
+                
+                const praiseWords = ['¡Excelente!', '¡Súper!', '¡Gran trabajo!', '¡Eres genial!'];
+                message.textContent = praiseWords[Math.floor(Math.random() * praiseWords.length)];
+            } else {
+                playSoundEffect('incorrect');
+                card.className = "bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center transform transition-transform duration-300 border-8 border-red-400 scale-100 shadow-2xl";
+                icon.innerHTML = '<i class="fa-solid fa-face-sad-tear text-red-500 animate-shake drop-shadow-md"></i>';
+                title.textContent = '¡Casi!';
+                title.className = "text-4xl font-title mb-2 text-red-600";
+                message.textContent = 'Fíjate bien e inténtalo de nuevo.';
+            }
+            modal.dataset.wasCorrect = isCorrect;
+        }
+
+        function closeFeedbackAndNext() {
+            const modal = document.getElementById('feedback-modal');
+            const card = document.getElementById('feedback-card');
+            const wasCorrect = modal.dataset.wasCorrect === 'true';
+            
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-75');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (wasCorrect) state.currentQuestionIndex++;
+                renderQuestion();
+            }, 300);
+        }
+
+        function finishLevel() {
+            document.getElementById('progress-bar').style.width = '100%';
+            const totalQ = levels[state.currentLevelIndex].questions.length;
+            document.getElementById('progress-text').textContent = `${totalQ} de ${totalQ}`;
+
+            setTimeout(() => {
+                playSoundEffect('win');
+                
+                if (!state.levelsCompleted.includes(state.currentLevelIndex)) {
+                    state.levelsCompleted.push(state.currentLevelIndex);
+                }
+                
+                const maxScore = totalQ * 10;
+                let newStars = Math.round((state.levelScore / maxScore) * 3);
+                if (newStars === 0 && state.levelScore > 0) newStars = 1;
+                state.totalStars += newStars;
+
+                const modal = document.getElementById('complete-modal');
+                const card = document.getElementById('complete-card');
+                const starsContainer = document.getElementById('stars-awarded');
+                
+                // Vistas
+                document.getElementById('complete-stars-view').classList.remove('hidden');
+                document.getElementById('complete-clue-view').classList.add('hidden');
+
+                starsContainer.innerHTML = '';
+                for (let i = 0; i < 3; i++) {
+                    if (i < newStars) {
+                        starsContainer.innerHTML += `<i class="fa-solid fa-star text-5xl text-yellow-400 animate-scale-up drop-shadow-md" style="animation-delay: ${i*0.2}s"></i>`;
+                    } else {
+                        starsContainer.innerHTML += `<i class="fa-regular fa-star text-5xl text-slate-300"></i>`;
+                    }
+                }
+
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    card.classList.remove('scale-0');
+                    card.classList.add('scale-100');
+                }, 10);
+            }, 500);
+        }
+
+        function showNewlyFoundClue() {
+            const idx = state.currentLevelIndex;
+            if (!state.cluesCollected.includes(idx)) {
+                state.cluesCollected.push(idx);
+            }
+            
+            document.getElementById('complete-stars-view').classList.add('hidden');
+            const clueView = document.getElementById('complete-clue-view');
+            clueView.classList.remove('hidden');
+            clueView.classList.add('animate-scale-up');
+            
+            document.getElementById('clue-number-display').textContent = idx + 1;
+            document.getElementById('new-clue-text').textContent = mysteryClues[idx];
+            
+            playSoundEffect('correct');
+        }
+
+        function returnToMap() {
+            const modal = document.getElementById('complete-modal');
+            const card = document.getElementById('complete-card');
+            
+            card.classList.remove('scale-100');
+            card.classList.add('scale-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                renderMap();
+                showScreen('screen-map');
+            }, 300);
+        }
+
+        function confirmExitGame() {
+            if('speechSynthesis' in window) window.speechSynthesis.cancel();
+            renderMap();
+            showScreen('screen-map');
+        }
+
+        function showCluesBag() {
+            const modal = document.getElementById('clues-modal');
+            const container = document.getElementById('clues-list-container');
+            document.getElementById('clue-badge').classList.add('hidden'); // Limpiar noti
+            
+            container.innerHTML = '';
+            if (state.cluesCollected.length === 0) {
+                container.innerHTML = `<div class="text-center p-6 text-slate-500 font-bold text-xl"><i class="fa-solid fa-magnifying-glass mb-2 text-4xl"></i><br>Aún no has encontrado pistas. ¡Juega misiones para conseguirlas!</div>`;
+            } else {
+                state.cluesCollected.sort((a,b) => a-b).forEach(idx => {
+                    container.innerHTML += `
+                        <div class="bg-amber-50 border-l-8 border-amber-500 p-4 rounded-r-xl shadow-sm flex items-center gap-4">
+                            <div class="bg-amber-200 text-amber-800 font-black rounded-full w-10 h-10 flex items-center justify-center shrink-0">#${idx+1}</div>
+                            <p class="text-lg font-bold text-slate-700 italic">${mysteryClues[idx]}</p>
+                        </div>
+                    `;
+                });
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeCluesBag() {
+            document.getElementById('clues-modal').classList.add('hidden');
+        }
+
+        function startFinalMystery() {
+            showScreen('screen-final');
+            
+            // Llenar pistas
+            const cluesContainer = document.getElementById('final-clues-list');
+            cluesContainer.innerHTML = '';
+            state.cluesCollected.forEach(idx => {
+                cluesContainer.innerHTML += `<div class="bg-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm border border-amber-300">Pista ${idx+1}: ${mysteryClues[idx]}</div>`;
+            });
+
+            // Renderizar Sospechosos
+            const suspectsContainer = document.getElementById('suspects-container');
+            suspectsContainer.innerHTML = '';
+            suspects.forEach(s => {
+                suspectsContainer.innerHTML += `
+                    <div class="suspect-card bg-slate-50 border-4 border-slate-200 rounded-2xl p-4 text-center" id="suspect-${s.id}" onclick="selectSuspect('${s.id}')">
+                        <div class="text-6xl mb-2 drop-shadow-md">${s.img}</div>
+                        <h4 class="font-title text-xl text-indigo-900 mb-1">${s.name}</h4>
+                        <p class="text-xs text-slate-500 font-bold">${s.desc}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function selectSuspect(id) {
+            state.selectedSuspect = id;
+            document.querySelectorAll('.suspect-card').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`suspect-${id}`).classList.add('selected');
+            
+            const btn = document.getElementById('btn-accuse');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            btn.classList.add('animate-pulse-glow');
+        }
+
+        function accuseSuspect() {
+            const isCorrect = state.selectedSuspect === 'loro'; // Loro Paco
+            const modal = document.getElementById('feedback-modal');
+            const card = document.getElementById('feedback-card');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const message = document.getElementById('feedback-message');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-75');
+                card.classList.add('scale-100');
+            }, 10);
+
+            // Reutilizar modal de feedback para resultado final
+            modal.dataset.final = "true"; 
+
+            if (isCorrect) {
+                playSoundEffect('win');
+                card.className = "bg-white rounded-3xl p-8 max-w-md w-full mx-4 text-center transform transition-transform duration-300 border-8 border-yellow-400 scale-100 shadow-2xl";
+                icon.innerHTML = '<div class="text-8xl mb-4 animate-bounce-short">🦜</div><div class="text-4xl text-yellow-500"><i class="fa-solid fa-trophy"></i></div>';
+                title.textContent = '¡Misterio Resuelto!';
+                title.className = "text-4xl font-title mb-2 text-indigo-800 mt-4";
+                message.innerHTML = `¡Excelente, Detective <b>${state.playerName}</b>! Descubriste que Loro Paco robaba las palabras para repetirlas sin parar.<br><br><b>¡Juego Completado!</b>`;
+                modal.dataset.wasCorrect = "true";
+            } else {
+                playSoundEffect('incorrect');
+                card.className = "bg-white rounded-3xl p-8 max-w-md w-full mx-4 text-center transform transition-transform duration-300 border-8 border-red-400 scale-100 shadow-2xl";
+                icon.innerHTML = '<i class="fa-solid fa-face-frown-open text-red-500 animate-shake text-7xl"></i>';
+                title.textContent = '¡Ese no es el Ladrón!';
+                title.className = "text-4xl font-title mb-2 text-red-600";
+                message.textContent = 'Lee bien las pistas de tu mochila e intenta acusar a otra persona.';
+                modal.dataset.wasCorrect = "false";
+            }
+        }
+
+        // Sobrescribir el cierre del modal si estamos en el final
+        const originalClose = closeFeedbackAndNext;
+        window.closeFeedbackAndNext = function() {
+            const modal = document.getElementById('feedback-modal');
+            if (modal.dataset.final === "true") {
+                const wasCorrect = modal.dataset.wasCorrect === "true";
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    delete modal.dataset.final;
+                    if (wasCorrect) {
+                        // Reiniciar o celebrar final
+                        alert(`¡Gracias por jugar, Detective ${state.playerName}!`);
+                        location.reload(); // Reiniciar el juego completo
+                    }
+                }, 300);
+            } else {
+                originalClose();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticles();
+            document.getElementById('playerName').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') startGame();
+            });
+        });
+    </script>
+</body>
+</html>
